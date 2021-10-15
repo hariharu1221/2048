@@ -67,6 +67,7 @@ public class NodePiece : MonoBehaviour
 
     public bool StartUpdate()
     {
+        if (this.gameObject == null) return false;
         if (Vector3.Distance(rect.anchoredPosition, pos) > 1)
         {
             MovePositionTo(pos);

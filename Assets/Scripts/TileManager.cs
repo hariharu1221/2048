@@ -13,14 +13,17 @@ public class TileManager : MonoBehaviour
     public int pieceCount = 2;
 
     Node[,] Board;
-    int height = 5;
-    int width = 5;
+    int height = 4;
+    int width = 4;
 
     List<NodePiece> update;
     List<NodePiece> dead;
     int spawnCount = 0;
     int turn = 0;
     int number = 0;
+
+    int PlayerHp = 50;
+    int EnemyHp = 50;
 
     enum KEY
     {
@@ -30,7 +33,7 @@ public class TileManager : MonoBehaviour
         right
     }
 
-    bool IsSwiping = false;
+    int IsSwiping = 0;
 
     void Start()
     {
@@ -72,10 +75,11 @@ public class TileManager : MonoBehaviour
     {
         //if (spawnCount == 25) over
         //else
+        if (number >= 10) TurnChange();
         KeyDown();
         updatePiece();
 
-        text.text = "SpawnCount: " + spawnCount;
+        text.text = "SpawnCount: " + spawnCount + "\nMyhp" + PlayerHp + "\nEnemyHP" + EnemyHp;
     }
 
     void updatePiece()
@@ -96,12 +100,16 @@ public class TileManager : MonoBehaviour
                 NodePiece p = dead[j];
                 Node node = getNodeAtPoint(p.index);
                 p.SetState(0);
-                Destroy(p.th(), 1f);
+                Destroy(p.th(), 0.5f);
                 node.SetPiece(null);
                 dead.Remove(p);
             }
         }
-
+        if (dead.Count == 0 && IsSwiping == 2)
+        {
+            IsSwiping = 3;
+            Invoke("RandSpawn", 0.5f);
+        }
     }
 
     void KeyDown()
@@ -114,8 +122,8 @@ public class TileManager : MonoBehaviour
 
     void Slide(KEY key)
     {
-        if (IsSwiping) return;
-        IsSwiping = true;
+        if (IsSwiping != 0) return;
+        IsSwiping = 1;
 
         switch (key)
         {
@@ -204,9 +212,13 @@ public class TileManager : MonoBehaviour
             }
         }
 
-        RandSpawn();
         number++;
-        IsSwiping = false;
+        IsSwiping = 2;
+    }
+
+    void TurnChange()
+    {
+
     }
 
     bool Spawn(Point p)
@@ -230,13 +242,14 @@ public class TileManager : MonoBehaviour
         bool on = true;
         while (on)
         {
-            if (spawnCount >= height*width) return;
+            if (spawnCount >= height*width) break;
 
-            int x = Random.Range(0, 5);
-            int y = Random.Range(0, 5);
+            int x = Random.Range(0, width);
+            int y = Random.Range(0, height);
 
             on = Spawn(new Point(x, y));
         }
+        IsSwiping = 0;
         spawnCount++;
     }
 
