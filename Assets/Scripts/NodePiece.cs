@@ -7,6 +7,7 @@ using TMPro;
 public class NodePiece : MonoBehaviour
 {
     public GameObject ValueText;
+    TileManager tile;
     RectTransform rect;
     Image img;
 
@@ -23,6 +24,10 @@ public class NodePiece : MonoBehaviour
         rect = GetComponent<RectTransform>();
         img = GetComponent<Image>();
         ValueText.GetComponent<TextMeshProUGUI>().color = new Color(82 / 255f, 82 / 255f, 82 / 255f);
+        var scale = rect.transform.localScale;
+        scale.x = 5 / GameManager.instance.tile.width;
+        scale.y = 5 / GameManager.instance.tile.height;
+        rect.transform.localScale = scale;
 
         index = id;
 
@@ -62,7 +67,7 @@ public class NodePiece : MonoBehaviour
 
     public void ResetPosition()
     {
-        pos = new Vector2(35 + (60 * index.x), -35 - (60 * index.y));
+        pos = new Vector2(35 + (300 * index.x / GameManager.instance.tile.width), -35 - (300 * index.y / GameManager.instance.tile.height));
     }
 
     public bool StartUpdate()
@@ -87,18 +92,24 @@ public class NodePiece : MonoBehaviour
     {
         ValueText.GetComponent<TextMeshProUGUI>().text = value.ToString();
 
-        if (value == 2) { img.color = new Color(255 / 255f, 225 / 255f, 225 / 255f); ValueText.GetComponent<TextMeshProUGUI>().fontSize = 35; }
+        if (value == 2) img.color = new Color(255 / 255f, 225 / 255f, 225 / 255f);
         if (value == 4) img.color = new Color(255 / 255f, 185 / 255f, 185 / 255f);
         if (value == 8) img.color = new Color(255 / 255f, 145 / 255f, 145 / 255f);
-        if (value == 16) { img.color = new Color(255 / 255f, 105 / 255f, 105 / 255f); ValueText.GetComponent<TextMeshProUGUI>().fontSize = 30; }
+        if (value == 16) img.color = new Color(255 / 255f, 105 / 255f, 105 / 255f);
         if (value == 32) img.color = new Color(255 / 255f, 65 / 255f, 65 / 255f);
         if (value == 64) img.color = new Color(185 / 255f, 185 / 255f, 255 / 255f);
-        if (value == 128) { img.color = new Color(145 / 255f, 145 / 255f, 255 / 255f); ValueText.GetComponent<TextMeshProUGUI>().fontSize = 25; }
+        if (value == 128) img.color = new Color(145 / 255f, 145 / 255f, 255 / 255f);
         if (value == 256) img.color = new Color(105 / 255f, 105 / 255f, 255 / 255f);
         if (value == 512) img.color = new Color(65 / 255f, 65 / 255f, 255 / 255f);
         if (value == 1024) img.color = new Color(65 / 255f, 65 / 255f, 185 / 255f);
-        if (value == 2048) { img.color = new Color(65 / 255f, 65 / 255f, 145 / 255f); ValueText.GetComponent<TextMeshProUGUI>().fontSize = 20; }
+        if (value == 2048) img.color = new Color(65 / 255f, 65 / 255f, 145 / 255f);
         if (value == 4096) img.color = new Color(65 / 255f, 65 / 255f, 105 / 255f);
+
+
+        if (value < 10) ValueText.GetComponent<TextMeshProUGUI>().fontSize = 35;
+        else if (value < 100) ValueText.GetComponent<TextMeshProUGUI>().fontSize = 30;
+        else if (value < 1000) ValueText.GetComponent<TextMeshProUGUI>().fontSize = 25;
+        else if (value < 10000) ValueText.GetComponent<TextMeshProUGUI>().fontSize = 20;
     }
 
     public void zero()

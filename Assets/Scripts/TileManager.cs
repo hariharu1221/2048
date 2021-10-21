@@ -13,8 +13,10 @@ public class TileManager : MonoBehaviour
     public int pieceCount = 2;
 
     Node[,] Board;
-    int height = 4;
-    int width = 4;
+
+    [Header("보드 크기")]
+    public int height = 4;
+    public int width = 4;
 
     List<NodePiece> update;
     List<NodePiece> dead;
@@ -68,13 +70,15 @@ public class TileManager : MonoBehaviour
         {
             RandSpawn();
         }
-
     }
 
     void Update()
     {
-        //if (spawnCount == 25) over
-        //else
+        TileUpdate();
+    }
+
+    void TileUpdate()
+    {
         if (number >= 10) TurnChange();
         KeyDown();
         updatePiece();
@@ -100,15 +104,15 @@ public class TileManager : MonoBehaviour
                 NodePiece p = dead[j];
                 Node node = getNodeAtPoint(p.index);
                 p.SetState(0);
-                Destroy(p.th(), 0.5f);
+                Destroy(p.th(), 0.4f);
                 node.SetPiece(null);
                 dead.Remove(p);
             }
         }
         if (dead.Count == 0 && IsSwiping == 2)
         {
-            IsSwiping = 3;
-            Invoke("RandSpawn", 0.5f);
+            if(spawnCount < 24) RandSpawn();
+            IsSwiping = 0;
         }
     }
 
@@ -221,7 +225,7 @@ public class TileManager : MonoBehaviour
 
     }
 
-    bool Spawn(Point p)
+    bool Spawn(Point p, int v)
     {
         if (getPieceAtPoint(p) != null)
             return true;
@@ -229,7 +233,7 @@ public class TileManager : MonoBehaviour
         Node node = getNodeAtPoint(p);
         GameObject n = Instantiate(nodePiece, gameBoard);
         NodePiece piece = n.GetComponent<NodePiece>();
-        piece.Init(p, 2, 1);
+        piece.Init(p, v, 1);
         node.SetPiece(piece);
         node.getPiece().EndUpdate();
 
@@ -240,6 +244,11 @@ public class TileManager : MonoBehaviour
     void RandSpawn()
     {
         bool on = true;
+        int v = 2;
+
+        if (Random.Range(0, 100) >= 88) v = 4;
+        else v = 2;
+
         while (on)
         {
             if (spawnCount >= height*width) break;
@@ -247,9 +256,8 @@ public class TileManager : MonoBehaviour
             int x = Random.Range(0, width);
             int y = Random.Range(0, height);
 
-            on = Spawn(new Point(x, y));
+            on = Spawn(new Point(x, y), v);
         }
-        IsSwiping = 0;
         spawnCount++;
     }
 
