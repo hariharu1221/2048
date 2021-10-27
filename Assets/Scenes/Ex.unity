@@ -356,7 +356,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "SpawnCount: \nMyhp:\nenemyhp:"
+  m_text: 'SpawnCount: '
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -601,8 +601,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2047316910}
-  - component: {fileID: 2047316909}
   - component: {fileID: 2047316911}
+  - component: {fileID: 2047316909}
+  - component: {fileID: 2047316912}
   m_Layer: 0
   m_Name: '02: GameManger'
   m_TagString: Untagged
@@ -628,6 +629,9 @@ MonoBehaviour:
   pieceCount: 2
   height: 5
   width: 5
+  number: 0
+  turn: 0
+  IsSwiping: 0
 --- !u!4 &2047316910
 Transform:
   m_ObjectHideFlags: 0
@@ -655,6 +659,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tile: {fileID: 2047316909}
+  hp: {fileID: 2047316912}
+--- !u!114 &2047316912
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2047316908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b17927f38f2932642a7ada2bfbee997f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2104587517
 GameObject:
   m_ObjectHideFlags: 0

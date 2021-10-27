@@ -20,12 +20,10 @@ public class TileManager : MonoBehaviour
 
     List<NodePiece> update;
     List<NodePiece> dead;
-    int spawnCount = 0;
-    int turn = 0;
-    int number = 0;
 
-    int PlayerHp = 50;
-    int EnemyHp = 50;
+    [HideInInspector]
+    public int number = 0;
+    int spawnCount = 0;
 
     enum KEY
     {
@@ -35,14 +33,16 @@ public class TileManager : MonoBehaviour
         right
     }
 
-    int IsSwiping = 0;
-
-    void Start()
+    public enum TURN
     {
-        Set();
+        blue,
+        red
     }
+    public TURN turn;
 
-    void Set()
+    public int IsSwiping = 0;
+
+    public void TileSet()
     {
         InitializedBoard();
         InstantiateBoard();
@@ -72,26 +72,34 @@ public class TileManager : MonoBehaviour
         }
     }
 
-    void Update()
-    {
-        TileUpdate();
-    }
-
-    void TileUpdate()
+    public void TileUpdate()
     {
         if (number >= 10) TurnChange();
         KeyDown();
         updatePiece();
 
-        text.text = "SpawnCount: " + spawnCount + "\nMyhp" + PlayerHp + "\nEnemyHP" + EnemyHp;
+        text.text = "SpawnCount: " + spawnCount; //+ "\nMyhp" + PlayerHp + "\nEnemyHP" + EnemyHp;
     }
 
     void updatePiece()
     {
+        for (int j = 0; j < dead.Count; j++)
+        {
+            NodePiece p = dead[j];
+            Node node = getNodeAtPoint(p.index);
+            update.Remove(p);
+            node.SetState(0);
+            GameObject ob = p.th();
+            node.SetPiece(null);
+            Destroy(ob);
+            dead.Remove(p);
+        }
+
         List<NodePiece> finishedUpdating = new List<NodePiece>();
         for (int i = 0; i < update.Count; i++)  //업데이트 카운트가 생기면
         {
             NodePiece piece = update[i];
+            Node node = getNodeAtPoint(piece.index);
             if (!piece.StartUpdate()) finishedUpdating.Add(piece);  //완료 업데이트로 넘김
         }
         for (int i = 0; i < finishedUpdating.Count; i++)   //완료 업데이트 카운트 만큼
@@ -99,29 +107,29 @@ public class TileManager : MonoBehaviour
             NodePiece piece = finishedUpdating[i];
             piece.EndUpdate();
             update.Remove(piece);
-            for (int j = 0; j < dead.Count; j++)
-            {
-                NodePiece p = dead[j];
-                Node node = getNodeAtPoint(p.index);
-                p.SetState(0);
-                Destroy(p.th(), 0.4f);
-                node.SetPiece(null);
-                dead.Remove(p);
-            }
         }
         if (dead.Count == 0 && IsSwiping == 2)
         {
             if(spawnCount < 24) RandSpawn();
-            IsSwiping = 0;
+            IsSwiping = 3;
+            GameManager.instance.hp.EndAction();
         }
     }
 
     void KeyDown()
     {
-        if (Input.GetKeyUp(KeyCode.W)) Slide(KEY.up);
-        if (Input.GetKeyUp(KeyCode.A)) Slide(KEY.left);
-        if (Input.GetKeyUp(KeyCode.S)) Slide(KEY.down);
-        if (Input.GetKeyUp(KeyCode.D)) Slide(KEY.right);
+        switch(turn)
+        {
+            case TURN.blue:
+                if (Input.GetKeyUp(KeyCode.W)) Slide(KEY.up);
+                if (Input.GetKeyUp(KeyCode.A)) Slide(KEY.left);
+                if (Input.GetKeyUp(KeyCode.S)) Slide(KEY.down);
+                if (Input.GetKeyUp(KeyCode.D)) Slide(KEY.right);
+                break;
+            case TURN.red:
+                Slide((KEY)Random.Range(0, 4));
+                break;
+        }
     }
 
     void Slide(KEY key)
@@ -215,14 +223,30 @@ public class TileManager : MonoBehaviour
                 if (Board[x, y].state == 2) Board[x, y].SetState(1);
             }
         }
-
         number++;
         IsSwiping = 2;
     }
 
-    void TurnChange()
+    public int TurnChange()
     {
+        Node node = getNodeAtPoint(new Point(0, 0));
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y <= height - 1; y++)
+            {
+                //if (Board[x, y].state == 0) continue;
+                if (Board[x, y].value > node.value) node = Board[x, y];
+            }
+        }
+        int val = node.value;
 
+        if (turn == TURN.blue) turn = TURN.red;
+        else turn = TURN.blue;
+
+        dead.Add(node.getPiece());
+        number = 0;
+
+        return val;
     }
 
     bool Spawn(Point p, int v)
