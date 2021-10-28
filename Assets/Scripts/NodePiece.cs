@@ -67,7 +67,7 @@ public class NodePiece : MonoBehaviour
 
     public void ResetPosition()
     {
-        pos = new Vector2(35 + (300 * index.x / GameManager.instance.tile.width), -35 - (300 * index.y / GameManager.instance.tile.height));
+        pos = new Vector2(95 + (900 * index.x / GameManager.instance.tile.width), -95 - (900 * index.y / GameManager.instance.tile.height));
     }
 
     public bool StartUpdate()
@@ -106,10 +106,10 @@ public class NodePiece : MonoBehaviour
         if (value == 4096) img.color = new Color(65 / 255f, 65 / 255f, 105 / 255f);
 
 
-        if (value < 10) ValueText.GetComponent<TextMeshProUGUI>().fontSize = 35;
-        else if (value < 100) ValueText.GetComponent<TextMeshProUGUI>().fontSize = 30;
-        else if (value < 1000) ValueText.GetComponent<TextMeshProUGUI>().fontSize = 25;
-        else if (value < 10000) ValueText.GetComponent<TextMeshProUGUI>().fontSize = 20;
+        if (value < 10) ValueText.GetComponent<TextMeshProUGUI>().fontSize = 130;
+        else if (value < 100) ValueText.GetComponent<TextMeshProUGUI>().fontSize = 100;
+        else if (value < 1000) ValueText.GetComponent<TextMeshProUGUI>().fontSize = 75;
+        else if (value < 10000) ValueText.GetComponent<TextMeshProUGUI>().fontSize = 50;
     }
 
     public void zero()
