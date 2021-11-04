@@ -41,7 +41,7 @@ public class BackEndManager : MonoBehaviour
         });
     }
 
-    public void ShowErrorUI(BackendReturnObject backendReturn)
+    public string ShowErrorUI(BackendReturnObject backendReturn)
     {
 
         int statusCode = int.Parse(backendReturn.GetStatusCode());
@@ -82,5 +82,7 @@ public class BackEndManager : MonoBehaviour
                 Debug.Log(backendReturn.GetMessage());
                 break;
         }
+
+        return backendReturn.GetMessage();
     }
 }
